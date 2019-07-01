@@ -51,6 +51,11 @@ int main(int argc, char* argv[]) {
     myEnv->open(dbenv, DB_CREATE | DB_INIT_MPOOL, 0);
   } catch (DbException &e) {
     cerr << "Error: unable to open the " << dbenv << " database environment\n";
+    cerr << e.what() << endl;
+    return 1;
+  } catch (exception &e) {
+    cerr << "Error: unable to open the " << dbenv << " database environment\n";
+    cerr << e.what() << endl;
     return 1;
   }
   
