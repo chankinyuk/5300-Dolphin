@@ -30,6 +30,72 @@ string toLowercase(string word) {
 }
 
 /**
+ * Helper function to assist in parsing AST columns to string
+ * @param col AST column to parse
+ * @return a string of the SQL table column(s)
+ */
+string columnToString(const ColumnDefinition *col) {
+  string columnList(col->name);
+  if (col->type == ColumnDefinition::DOUBLE) {
+    columnList += " DOUBLE";
+  } else if (col->type == ColumnDefinition::TEXT) {
+    columnList += " TEXT";
+  } else if (col->type == ColumnDefinition::INT) {
+    columnList += " INT";
+  } else {
+    columnList += "...";
+  }
+  return columnList;
+}
+
+/**
+ * Helper function to interpret create SQL command from AST
+ * @param stmt CreateStatement AST to be executed
+ * @return a string of the create SQL query
+ */
+string executeCreate(const CreateStatement *stmt) {
+  string createResult = "CREATE TABLE ";
+
+  // If AST type is not a table, return empty
+  if (stmt->type != CreateStatement::kTable) {
+    return createResult += "...";
+  }
+
+  // Append IF NOT EXISTS flag if present in AST
+  if (stmt->ifNotExists) {
+    createResult += "IF NOT EXISTS ";
+  }
+
+  // Append column(s) to return
+  createResult += string(stmt->tableName) + " (";
+  bool comma = false;
+  for(ColumnDefinition *col : *stmt->columns) {
+    if (comma) {
+      createResult += ", ";
+    }
+    createResult += columnToString(col);
+    comma = true;
+  }
+  createResult += ")";
+  return createResult;
+}
+
+/**
+ * Interprets create and select SQL statements into string text
+ * @param stmt SQLParserResult AST to be executed
+ * @return a string of the SQL query
+ */
+string execute(const SQLStatement *stmt) {
+  if (stmt->type() == kStmtSelect) {
+    return "select test working";
+  } else if (stmt->type() == kStmtCreate) {  
+    return executeCreate((const CreateStatement*) stmt);
+  } else {
+    return "Command not yet implemented";
+  }
+}
+
+/**
  * Main function of CPSC-5300 SQL string parser program
  */
 int main(int argc, char* argv[]) {
@@ -84,8 +150,8 @@ int main(int argc, char* argv[]) {
       // Execute the query command if it is valid
       if (result->isValid()) {
         for (unsigned i = 0; i < result->size(); i++) {
-          //FIXME build execute functionality
-          cout << result->getStatement(i) << endl;
+          //FIXME finish building execute functionality
+          cout << execute(result->getStatement(i)) << endl;
         }
       } else {
         cout << "Error invalid SQL: " << query << endl;
