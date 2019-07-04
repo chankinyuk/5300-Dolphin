@@ -203,7 +203,6 @@ string expressionToString(const Expr *expr) {
     if (expr->table != NULL) {
       exprResult += string(expr->table) + ".";
     }
-    break;
   case kExprLiteralString:
     exprResult += expr->name;
     break;
@@ -297,7 +296,7 @@ string tableToString(const TableRef *table) {
         tableInfo += ", ";
       }
       tableInfo += tableToString(t);
-      comma = false;
+      comma = true;
     }
     break;
   }
