@@ -1,4 +1,4 @@
-/***
+/**
  * Purpose: Milestone 1 - Framework SQL AST parser
  *
  * @file sql5300.cpp
