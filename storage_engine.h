@@ -24,8 +24,8 @@ extern DbEnv* _DB_ENV;
 /*
  * Convenient aliases for types
  */
-typedef u_int16_t RecordID;
-typedef u_int32_t BlockID;
+typedef uint16_t RecordID;
+typedef uint32_t BlockID;
 typedef std::vector<RecordID> RecordIDs;
 typedef std::length_error DbBlockNoRoomError;
 
