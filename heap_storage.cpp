@@ -68,15 +68,14 @@ RecordIDs* SlottedPage::ids(void) {
 }
 
 void SlottedPage::get_header(u16 &size, u16 &loc, RecordID id) {
-  //Get the size and offset for given id. For id of zero, it is the block header.
-  //        return self._get_n(4 * id), self._get_n(4 * id + 2)
   // TODO implement
-
 }
 
-// Store the size and offset for given id. For id of zero, store the block header.
+// Store the size and offset for given id.
+// For id of zero, store the block header.
 void SlottedPage::put_header(RecordID id, u16 size, u16 loc) {
-  if (id == 0) { // called the put_header() version and using the default params
+  // Called the put_header() version and using the default params
+  if (id == 0) {
     size = this->num_records;
     loc = this->end_free;
   }
@@ -84,8 +83,15 @@ void SlottedPage::put_header(RecordID id, u16 size, u16 loc) {
   put_n(4*id + 2, loc);
 }
 
+// Returns if space is available for a record with a given size,
+// inclusive of 4 byte header
 bool SlottedPage::has_room(u16 size) {
-  // TODO implement
+  bool canFitRecord = false;
+  u16 spaceLeft = this->end_free - (this->num_records + 1) * 4;
+  if (size <= spaceLeft) {
+    canFitRecord = true;
+  }
+  return canFitRecord;
 }
 
 void SlottedPage::slide(u16 start, u16 end) {
